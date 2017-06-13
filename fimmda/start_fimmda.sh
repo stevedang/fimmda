@@ -6,12 +6,17 @@ unset PYTHONHOME
 OS_TYPE=`uname`
 if [ "$OS_TYPE" = "SunOS" ]; then
 	python_command="python2.7" #if it is solaris
+	awk_command="nawk" #if it is solaris
 else
 	python_command="python.exe" #if this is cygwin
+	awk_command="awk" #if this is cygwin
 fi
 
 #the current working folder 
 BASEDIR=$(dirname $0)
+
+#config file
+CONFIGFILE="sources/fimmda.properties"
 
 #time each loop in seconds, by default it is 60 seconds
 LOOPTIME=60
@@ -38,17 +43,15 @@ mdit_command="./marketdataInterface.sh -f "
 #move to base dir folder in case this script is triggered remotely from another place
 cd $BASEDIR
 
-#Redirect stdout ( > ) into a named pipe ( >() ) running "tee"
-#exec 1>> $BASEDIR/$LOGFILE 
-#exec 2>> $BASEDIR/$LOGFILE 
-
-
 #Get its own PID and write pid to the log file
 #echo $! > $BASEDIR/$PIDFILE
 #================================================
 #Function write log
 function writeToLog() {
-	echo $1 >&2 
+	#echo $1 >&2 
+	timeAndDate=`date`
+	echo "[$timeAndDate] $1"
+	#echo $1
 }
 #================================================
 #Function run_mdit, to execute the MDIT file
@@ -72,25 +75,27 @@ function run_fimmda() {
 	#Loop through the input folder and run transformation
 	#output file will be in output folder
 	writeToLog "Start looping and transforming all the files"
-	
 	while true
 	do
 		#for file in `ls $BASEDIR/$input_folder/*.csv`
 		#search for all csv files inside input folder
+		writeToLog "Searching input file in  $BASEDIR/$input_folder/"
 		for file in `find $BASEDIR/$input_folder/ -name '*.csv'`
 		do
 			#getting the file name only
 			filename=`basename $file`
 			
 			#execute the command to transform the source csv to MDIT csv format
-			$python_command $BASEDIR/$source_folder/main.py $filename 
+			writeToLog "calling the transformation module"
+			$python_command $BASEDIR/$source_folder/main.py $filename
 			
 			#once the file is ready send it to mdit
 			#remove the input file
 			rm $file 
 			
 			#scan the output folder and move all the newly created file to MDIT
-			for file2 in `ls $BASEDIR/$output_folder/*.csv`
+			writeToLog "Searching output file in  $BASEDIR/$output_folder/"
+			for file2 in `find $BASEDIR/$output_folder/ -name '*.csv'`
 			do
 				#move the transformed file to mdit input folder
 				filename2=`basename $file2`
@@ -109,25 +114,24 @@ function run_fimmda() {
 	#turn IFS back
 	IFS=$SAVEIFS
 }
-
 case "$1" in
       --daemon)
-            echo "Starting deamon mode in background "
-	    #write output, error and everythihng to log file
- 	    echo $$ >> $BASEDIR/$PIDFILE
-	    exec 1>>	$BASEDIR/$LOGFILE
-	    exec 2>>	$BASEDIR/$LOGFILE
- 	    run_fimmda & 
+			#write output, error and everythihng to log file
+			echo $$ >> $BASEDIR/$PIDFILE
+			exec 1>>	$BASEDIR/$LOGFILE
+			exec 2>>	$BASEDIR/$LOGFILE
+			writeToLog "Starting deamon mode in background "
+			run_fimmda & 
             ;;
       --normal)
-            echo "Starting test mode in foreground..click Ctrl-D to stop"
-	    #write output and everything to both file and console		
- 	    echo $$ >> $BASEDIR/$PIDFILE
- 	    run_fimmda | tee -i >> $BASEDIR/$LOGFILE 
+            writeToLog "Starting test mode in foreground..click Ctrl-D to stop"
+			#write output and everything to both file and console		
+			echo $$ >> $BASEDIR/$PIDFILE
+			run_fimmda | tee $BASEDIR/$LOGFILE 
             ;;
        --help)
             echo "Usage: $0 --[option]"
-	    echo "Options:"
+			echo "Options:"
             echo "    daemon:"
             echo "            Run in background. Process will still run when session is closed.  Need to run stop command to kill."
             echo "    normal:"
@@ -135,7 +139,7 @@ case "$1" in
             echo "    help:"
             echo "            Print out the menu"
             exit 1
-	    ;;				
+			;;				
           *)
             echo "Unknown command, run help for more option."
             echo "Usage: $0 --help"

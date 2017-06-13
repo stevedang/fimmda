@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 """
 Created on Wed Mar 01 10:10:57 2017
-@author: Murex Integration Singapore
+@author: @author: Murex Integration 2017
 """
-import csv, re, sys
+#from  utilities import *
+import csv, sys, re
 import ConfigParser
 #from  utilities import contains_header, contains_same_number_of_columns
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.properties")
+config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
 # Main constants
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
 input_file = ""
-output_file = config.get("ZCYC","output_file")
-csv_header = config.get("ZCYC","csv_header")
-row_format_reg = config.get("ZCYC","row_format_reg")
-header_row = config.get("ZCYC","header_row").split(",")
-fixed_data = config.get("ZCYC","fixed_data").split(",")
+output_file = config.get("TBILL","output_file")
+csv_header = config.get("TBILL","csv_header")
+row_format_reg = config.get("TBILL","row_format_reg")
+header_row = config.get("TBILL","header_row").split(",")
+fixed_data = config.get("TBILL","fixed_data").split(",")
 #==============================================================================
 def main():
 	#script, filename = argv
 	source_file = input_folder + input_file
-	print "Reading ZCYC input file ",source_file
-
+	print "Reading TBill input file ",source_file
 	dataList = []
 	# open csv file
 	try:
@@ -69,4 +69,4 @@ def main():
 #==============================================================================
 if __name__ == "__main__":
 	input_file = " ".join(sys.argv[1:])
-	main() 
+	main()

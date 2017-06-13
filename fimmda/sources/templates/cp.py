@@ -7,23 +7,22 @@ import csv, re, sys
 import ConfigParser
 #from  utilities import contains_header, contains_same_number_of_columns
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.properties")
+config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
 # Main constants
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
 input_file = ""
-output_file = config.get("CD","output_file")
-csv_header = config.get("CD","csv_header")
-row_format_reg = config.get("CD","row_format_reg")
-header_row = config.get("CD","header_row").split(",")
-fixed_data = config.get("CD","fixed_data").split(",")
+output_file = config.get("TBILL","output_file")
+csv_header = config.get("CP","csv_header")
+row_format_reg = config.get("CP","row_format_reg")
+header_row = config.get("CP","header_row").split(",")
+fixed_data = config.get("CP","fixed_data").split(",")
 #==============================================================================
 def main():
-	#script, filename = argv
 	source_file = input_folder + input_file
-	print "Reading CD input file ",source_file
+	print "Reading CP input file ",source_file
 
 	dataList = []
 	# open csv file
@@ -39,6 +38,7 @@ def main():
 	except:
 		print "Error when trying to open the file!" , source_file
 		sys.exit()
+
 	#if there is nothing int the file, just stop
 	if not dataList:
 		print("There is nothing in the source file")
@@ -46,7 +46,7 @@ def main():
 	#==============================================================================
 	#write to the new file
 	try:
-		destination_file = output_folder + output_file    
+		destination_file = output_folder+ output_file    
 		with open(destination_file, 'wb') as csv_out:
 			#write the header    
 			writer = csv.DictWriter(csv_out, fieldnames=header_row)
@@ -66,7 +66,7 @@ def main():
 		print "======================================"
 	except:
 		print "Error when trying to write into the file!" , destination_file
-#==============================================================================
+#==============================================================================		
 if __name__ == "__main__":
 	input_file = " ".join(sys.argv[1:])
-	main() 
+	main()

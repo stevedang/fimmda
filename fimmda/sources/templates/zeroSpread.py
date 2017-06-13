@@ -8,7 +8,7 @@ Created on Wed Mar 01 10:10:57 2017
 import csv, re, sys, os, argparse
 import ConfigParser
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.properties")
+config.read("sources/mapping/fimmda.mapping")
 
 def _is_number(s):
     try:

@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 """
 Created on Wed Mar 01 10:10:57 2017
-@author: @author: Murex Integration 2017
+@author: Murex Integration Singapore
 """
-#from  utilities import *
-import csv, sys, re
+import csv, re, sys
 import ConfigParser
 #from  utilities import contains_header, contains_same_number_of_columns
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.properties")
+config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
 # Main constants
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
 input_file = ""
-output_file = config.get("TBILL","output_file")
-csv_header = config.get("TBILL","csv_header")
-row_format_reg = config.get("TBILL","row_format_reg")
-header_row = config.get("TBILL","header_row").split(",")
-fixed_data = config.get("TBILL","fixed_data").split(",")
+output_file = config.get("CD","output_file")
+csv_header = config.get("CD","csv_header")
+row_format_reg = config.get("CD","row_format_reg")
+header_row = config.get("CD","header_row").split(",")
+fixed_data = config.get("CD","fixed_data").split(",")
 #==============================================================================
 def main():
 	#script, filename = argv
 	source_file = input_folder + input_file
-	print "Reading TBill input file ",source_file
+	print "Reading CD input file ",source_file
+
 	dataList = []
 	# open csv file
 	try:
@@ -69,4 +69,4 @@ def main():
 #==============================================================================
 if __name__ == "__main__":
 	input_file = " ".join(sys.argv[1:])
-	main()
+	main() 

@@ -9,7 +9,7 @@ import csv, re, sys
 import ConfigParser
 
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.properties")
+config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
 def _getMaturity(str2):
 	maturity = "";

@@ -9,7 +9,7 @@ import ConfigParser
 
 #Read the config Parser from fimmda.properties
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.properties")
+#config.read("sources/fimmda.properties")
 
 #If it is win32 (cygwin) use python.exe, otherwise use python2.7
 if "win32" == sys.platform:
@@ -27,6 +27,7 @@ input_file = " ".join(sys.argv[1:])
 output_file = ""
 
 #create a new folder by the name and the pid of the current process
+config.read("sources/fimmda.properties")
 input_folder = config.get("General","input_folder")
 archive_folder = config.get("General","archive_folder")
 output_folder = config.get("General","output_folder")
@@ -51,32 +52,25 @@ cmd = ""
 error = ""
 #If the file name contains the format of TBILL file name
 if config.get("Files","tbill_file") in input_file:
-	cmd = python_command+" ./sources/control/tbill.py "+input_file
-	output_file = config.get("TBILL","output_file")
+	cmd = python_command+" ./sources/templates/tbill.py "+input_file
 #If the file name contains the format of ZERO Spread file name
 elif config.get("Files","zeroSpread_file") in input_file:
-	cmd = python_command+" ./sources/control/zeroSpread.py "+input_file
-	output_file = config.get("ZERO_SPREAD","output_file")
+	cmd = python_command+" ./sources/templates/zeroSpread.py "+input_file
 #If the file name contains the format of Par Spread file name
 elif config.get("Files","parSpread_file") in input_file:
-	cmd = python_command+" ./sources/control/parSpread.py "+input_file
-	output_file = config.get("PAR_SPREAD","output_file")
+	cmd = python_command+" ./sources/templates/parSpread.py "+input_file
 #If the file name contains the format of Par Yield file name
 elif config.get("Files","parYield_file") in input_file:
-	cmd = python_command+" ./sources/control/parYield.py "+input_file
-	output_file = config.get("PAR_YIELD","output_file")
+	cmd = python_command+" ./sources/templates/parYield.py "+input_file
 #If the file name contains the format of CP file name
 elif config.get("Files","cp_file") in input_file:
-	cmd = python_command+" ./sources/control/cp.py "+input_file
-	output_file = config.get("CP","output_file")
+	cmd = python_command+" ./sources/templates/cp.py "+input_file
 #If the file name contains the format of CD file name
 elif config.get("Files","cd_file") in input_file:
-	cmd = python_command+" ./sources/control/cd.py "+input_file
-	output_file = config.get("CD","output_file")
+	cmd = python_command+" ./sources/templates/cd.py "+input_file
 #If the file name contains the format of ZCYC file name
 elif config.get("Files","zcyc_file") in input_file:
-	cmd = python_command+" ./sources/control/zcyc.py "+input_file
-	output_file = config.get("ZCYC","output_file")
+	cmd = python_command+" ./sources/templates/zcyc.py "+input_file
 #If the file has the wrong format, no output file is generated
 # error message is printed out
 else:
@@ -101,5 +95,5 @@ if input_file:
 	shutil.copy2(input_folder+input_file, new_folder)
 #copy the output file into the archive folder
 if output_file:
-	shutil.copy2(output_folder+output_file, new_folder)
+	shutil.copy2(output_folder+"*.csv", new_folder)
 
