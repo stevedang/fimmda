@@ -15,30 +15,40 @@ fi
 #the current working folder 
 BASEDIR=$(dirname $0)
 
-#config file
-CONFIGFILE="sources/fimmda.properties"
 
 #time each loop in seconds, by default it is 60 seconds
 LOOPTIME=60
 
-#log file to write out all the information
-LOGFILE="logs/service.log"
-
-#pid file to kill off the daemon 
-PIDFILE="logs/service.pid"
-
 #input folder where we scan and pick up the file
 input_folder="input"
+[ ! -d $BASEDIR/$input_folder ] && { mkdir -p $BASEDIR/$input_folder; }
 
 #output folder where we retrieve the transformed file
 output_folder="output"
+[ ! -d $BASEDIR/$output_folder ] && { mkdir -p $BASEDIR/$output_folder; }
 
 #the source folder where the main.py resides
-source_folder="./sources"
+source_folder="./sources "
+[ ! -d $BASEDIR/$source_folder ] && { echo "Cannot find source folder. Exiting.."; exit 1; }
+
+# the log folder
+LOGFOLDER="logs"
+[ ! -d $BASEDIR/$LOGFOLDER ] && { mkdir -p $BASEDIR/$LOGFOLDER; }
+
+#log file to write out all the information
+LOGFILE="service.log"
+
+#pid file to kill off the daemon 
+PIDFILE="service.pid"
+
+#config file
+CONFIGFILE="fimmda.properties"
+[ ! -f $BASEDIR/$source_folder/$CONFIGFILE ] && { echo "Config file does not exist. Exiting"; exit 1; }
 
 #MDIT folder and MDIT commands
 mdit_folder="../"
 mdit_command="./marketdataInterface.sh -f "
+[ ! -f $BASEDIR/$source_folder/$CONFIGFILE ] && { echo "Config file does not exist. Exiting"; exit 1; }
 
 #move to base dir folder in case this script is triggered remotely from another place
 cd $BASEDIR
@@ -117,17 +127,17 @@ function run_fimmda() {
 case "$1" in
       --daemon)
 			#write output, error and everythihng to log file
-			echo $$ >> $BASEDIR/$PIDFILE
-			exec 1>>	$BASEDIR/$LOGFILE
-			exec 2>>	$BASEDIR/$LOGFILE
+			echo $$ >> $BASEDIR/$LOGFOLDER/$PIDFILE
+			exec 1>>	$BASEDIR/$LOGFOLDER/$LOGFILE
+			exec 2>>	$BASEDIR/$LOGFOLDER/$LOGFILE
 			writeToLog "Starting deamon mode in background "
 			run_fimmda & 
             ;;
       --normal)
             writeToLog "Starting test mode in foreground..click Ctrl-D to stop"
 			#write output and everything to both file and console		
-			echo $$ >> $BASEDIR/$PIDFILE
-			run_fimmda | tee $BASEDIR/$LOGFILE 
+			echo $$ >> $BASEDIR/$LOGFOLDER/$PIDFILE
+			run_fimmda | tee $BASEDIR/$LOGFOLDER/$LOGFILE 
             ;;
        --help)
             echo "Usage: $0 --[option]"
