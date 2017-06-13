@@ -15,7 +15,6 @@ fi
 #the current working folder 
 BASEDIR=$(dirname $0)
 
-
 #time each loop in seconds, by default it is 60 seconds
 LOOPTIME=60
 
@@ -28,12 +27,12 @@ output_folder="output"
 [ ! -d $BASEDIR/$output_folder ] && { mkdir -p $BASEDIR/$output_folder; }
 
 #the source folder where the main.py resides
-source_folder="./sources "
-[ ! -d $BASEDIR/$source_folder ] && { echo "Cannot find source folder. Exiting.."; exit 1; }
+source_folder="./sources"
+[ ! -d $BASEDIR/$source_folder ] && { echo "Cannot find source folder. Exiting.."; exit 1; } 
 
 # the log folder
 LOGFOLDER="logs"
-[ ! -d $BASEDIR/$LOGFOLDER ] && { mkdir -p $BASEDIR/$LOGFOLDER; }
+[ ! -d "$BASEDIR/$LOGFOLDER" ] && { mkdir -p $BASEDIR/$LOGFOLDER; }
 
 #log file to write out all the information
 LOGFILE="service.log"
@@ -48,20 +47,15 @@ CONFIGFILE="fimmda.properties"
 #MDIT folder and MDIT commands
 mdit_folder="../"
 mdit_command="./marketdataInterface.sh -f "
-[ ! -f $BASEDIR/$source_folder/$CONFIGFILE ] && { echo "Config file does not exist. Exiting"; exit 1; }
 
 #move to base dir folder in case this script is triggered remotely from another place
 cd $BASEDIR
 
-#Get its own PID and write pid to the log file
-#echo $! > $BASEDIR/$PIDFILE
 #================================================
 #Function write log
 function writeToLog() {
-	#echo $1 >&2 
 	timeAndDate=`date`
 	echo "[$timeAndDate] $1"
-	#echo $1
 }
 #================================================
 #Function run_mdit, to execute the MDIT file
