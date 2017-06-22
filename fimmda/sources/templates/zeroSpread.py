@@ -5,30 +5,12 @@ Created on Wed Mar 01 10:10:57 2017
 @author: @author: Murex Integration 2017
 """
 #from  utilities import *
-import csv, re, sys, os, argparse
+import csv, re, sys, os, argparse, logging
 import ConfigParser
+import utilities
+from mapping.fimmdaException import *
 config = ConfigParser.ConfigParser()
 config.read("sources/mapping/fimmda.mapping")
-
-def _is_number(s):
-    try:
-        complex(s) # for int, long, float and complex
-    except ValueError:
-        return False
-
-    return True
-    
-def _getMaturity(str2):
-    maturity = "";
-    try:    
-        temp = float(str2);
-        if temp.is_integer():
-            maturity = str(int(temp)) + "Y";
-        else: 
-            maturity = str(int(temp * 12)) + "M";
-        return maturity;
-    except:
-        print "something wrong with the maturity conversion"
 #==============================================================================
 table_name_list = [
                    ["PSU & Fis", "PSU"],
@@ -69,7 +51,8 @@ class Table:
             
     def addMaturityList(self,list2): # add the annualised into the maturity list
         for i in list2: 
-            if _is_number(i): self.maturityList.append(_getMaturity(i))
+            #if utilities.isNumber(i): self.maturityList.append(utilities.getMaturity(i))
+            self.maturityList.append(utilities.getMaturity(i))
             
     def addRating(self,str2):
         found = False
@@ -92,11 +75,12 @@ class Table:
     def getRatingList(self): return self.ratingList
 #==============================================================================
 
-def main():
-	#input_file = sys.argv[1]
-	#script, filename = argv
+def main(args):
+	logger = logging.getLogger(__name__)
+	input_file = args
 	source_file = input_folder + input_file
-	print "Reading Zero Spread input file ",source_file
+	print "haha"
+	logging.info("Reading Zero Spread input file " + source_file)
 	tableList = []
 	# open csv file
 	try:
@@ -132,7 +116,7 @@ def main():
 		sys.exit()
 	#if there is nothing int the file, just stop
 	if not tableList:
-		print("There is nothing in the source file")
+		raise FimmdaException(ERROR_104)
 		sys.exit()
 	#==============================================================================
 	#write to the new file
@@ -171,5 +155,4 @@ def main():
 		print ("Error: %s.\n" % str(err))
 #==============================================================================
 if __name__ == "__main__":
-	input_file = " ".join(sys.argv[1:])
-	main()
+	main(sys.argv[1:]) 

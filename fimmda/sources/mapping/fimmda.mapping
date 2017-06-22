@@ -32,7 +32,7 @@ starting_row = ^Zero coupon spreads
 testing = \,((\d+(\.\d*)?)|\.\d+)([eE][+-]?[0-9]+)?\,
 header_row = type,subType,label,maturity,nature,spreadAsk,spreadBid,spreadMid
 fixed_data = Rating,FIMMDA
-bdcs_type = Asset Swap
+bdcs_type = Zero coupon
 rating_label_list = AAA,AA+,AA,AA-,A+,A,A-,BBB+,BBB,BBB-,BB+,BB,Unrated
 #==============================================================================
 # all constanst used for par spread
@@ -44,7 +44,7 @@ starting_row = ^Annualised spreads
 testing = \,((\d+(\.\d*)?)|\.\d+)([eE][+-]?[0-9]+)?\,
 header_row = type,subType,label,maturity,nature,spreadAsk,spreadBid,spreadMid
 fixed_data = Rating,FIMMDA
-bdcs_type = Zero coupon
+bdcs_type = Asset Swap
 rating_label_list = AAA,AA+,AA,AA-,A+,A,A-,BBB+,BBB,BBB-,BB+,BB,Unrated
 #==============================================================================
 # all constants used for par yield

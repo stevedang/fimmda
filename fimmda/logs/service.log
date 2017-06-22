@@ -1,0 +1,9 @@
+2017-06-22 18:50:30, - Start looping and transforming all the files
+2017-06-22 18:50:30, - Searching input file in  ./input/
+2017-06-22 18:50:30, - calling the transformation module
+Error: list index out of range.
+
+2017-06-22 18:50:30, - Searching output file in  ./output/
+2017-06-22 18:50:30, - Moving BDSC_MUREX_EOD-DATA_TODAY.csv to mdit folder ../
+2017-06-22 18:50:31, - Executing MDIT
+MDIT is importing data -f BDSC_MUREX_EOD-DATA_TODAY.csv

@@ -7,7 +7,7 @@ Created on Wed Mar 01 10:10:57 2017
     
 import csv, re, sys
 import ConfigParser
-
+from mapping.fimmdaException import * 
 config = ConfigParser.ConfigParser()
 config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
@@ -35,8 +35,8 @@ row_format_reg = config.get("PAR_YIELD","row_format_reg")
 header_row = config.get("PAR_YIELD","header_row").split(",")
 fixed_data = config.get("PAR_YIELD","fixed_data").split(",")
 #==============================================================================
-def main():
-	#script, filename = argv
+def main(args):
+	input_file = args
 	source_file =  input_folder + input_file
 	print "Reading Par Yield input file ",source_file
 
@@ -49,14 +49,14 @@ def main():
 				#print line   
 				line = line.rstrip()#remove newline characters
 				if bool(re.search(row_format_reg, line)): #search if the line format is good            
-					dataList.append(line.split(demiliter));
-		textfile.close;
+					dataList.append(line.split(demiliter))
+		textfile.close
 	except:
-		print "Error when trying to open the file!" , source_file;
+		raise FimmdaException(ERROR_103 + source_file)
 		sys.exit()
 	#if there is nothing int the file, just stop
 	if not dataList:
-		print("There is nothing in the source file")
+		raise FimmdaException(ERROR_104)
 		sys.exit()
 	#==============================================================================
 	#write to the new file
@@ -80,8 +80,7 @@ def main():
 		print "Processing done", destination_file
 		print "======================================"
 	except:
-		print "Error when trying to write into the file!" , destination_file
+		raise FimmdaException(ERROR_102 + destination_file)
 #==============================================================================
 if __name__ == "__main__":
-	input_file = " ".join(sys.argv[1:])
-	main()    
+	main(sys.argv[1:])    

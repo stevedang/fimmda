@@ -5,6 +5,7 @@ Created on Wed Mar 01 10:10:57 2017
 """
 import csv, re, sys
 import ConfigParser
+from mapping.fimmdaException import * 
 #from  utilities import contains_header, contains_same_number_of_columns
 config = ConfigParser.ConfigParser()
 config.read("sources/mapping/fimmda.mapping")
@@ -20,8 +21,8 @@ row_format_reg = config.get("CD","row_format_reg")
 header_row = config.get("CD","header_row").split(",")
 fixed_data = config.get("CD","fixed_data").split(",")
 #==============================================================================
-def main():
-	#script, filename = argv
+def main(args):
+	input_file = args
 	source_file = input_folder + input_file
 	print "Reading CD input file ",source_file
 
@@ -37,11 +38,11 @@ def main():
 					dataList.append(line.split(demiliter))
 		textfile.close
 	except:
-		print "Error when trying to open the file!" , source_file
+		raise FimmdaException(ERROR_103 + source_file)
 		sys.exit()
 	#if there is nothing int the file, just stop
 	if not dataList:
-		print("There is nothing in the source file")
+		raise FimmdaException(ERROR_104)
 		sys.exit()
 	#==============================================================================
 	#write to the new file
@@ -65,8 +66,7 @@ def main():
 		print "Processing done", destination_file
 		print "======================================"
 	except:
-		print "Error when trying to write into the file!" , destination_file
+		raise FimmdaException(ERROR_102 + destination_file)
 #==============================================================================
 if __name__ == "__main__":
-	input_file = " ".join(sys.argv[1:])
-	main() 
+	main(sys.argv[1:]) 

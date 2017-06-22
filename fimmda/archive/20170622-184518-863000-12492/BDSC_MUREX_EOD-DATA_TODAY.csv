@@ -1,0 +1,12 @@
+type,subType,label,maturity,nature,spreadAsk,spreadBid,spreadMid
+Rating,FIMMDA,PSU,Zero coupon spreads,Zero coupon,61,61,61
+Rating,FIMMDA,PSU,6M,Zero coupon,53,53,53
+Rating,FIMMDA,PSU,1Y,Zero coupon,73,73,73
+Rating,FIMMDA,PSU,2Y,Zero coupon,64,64,64
+Rating,FIMMDA,PSU,3Y,Zero coupon,64,64,64
+Rating,FIMMDA,PSU,4Y,Zero coupon,64,64,64
+Rating,FIMMDA,PSU,5Y,Zero coupon,69,69,69
+Rating,FIMMDA,PSU,6Y,Zero coupon,73,73,73
+Rating,FIMMDA,PSU,7Y,Zero coupon,69,69,69
+Rating,FIMMDA,PSU,8Y,Zero coupon,63,63,63
+Rating,FIMMDA,PSU,9Y,Zero coupon,58,58,58

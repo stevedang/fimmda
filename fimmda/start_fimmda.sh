@@ -54,8 +54,8 @@ cd $BASEDIR
 #================================================
 #Function write log
 function writeToLog() {
-	timeAndDate=`date`
-	echo "[$timeAndDate] $1"
+	timeAndDate=$(date +"%Y-%m-%d %T,%3N")
+	echo "$timeAndDate - $1"
 }
 #================================================
 #Function run_mdit, to execute the MDIT file
