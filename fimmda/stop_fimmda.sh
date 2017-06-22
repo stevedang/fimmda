@@ -6,7 +6,7 @@ else
 fi
 
 BASEDIR=$(dirname "$0")
-exec 2>/dev/null
+#exec 2>/dev/null
 #kill the services
 echo "Killing the fimmda service"
 cat $BASEDIR/logs/service.pid| $awk_command '{ system("kill -TERM -"$1);}'
