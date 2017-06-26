@@ -20,19 +20,15 @@ LOOPTIME=60
 
 #input folder where we scan and pick up the file
 input_folder="input"
-[ ! -d $BASEDIR/$input_folder ] && { mkdir -p $BASEDIR/$input_folder; }
 
 #output folder where we retrieve the transformed file
 output_folder="output"
-[ ! -d $BASEDIR/$output_folder ] && { mkdir -p $BASEDIR/$output_folder; }
 
 #the source folder where the main.py resides
 source_folder="./sources"
-[ ! -d $BASEDIR/$source_folder ] && { echo "Cannot find source folder. Exiting.."; exit 1; } 
 
 # the log folder
 LOGFOLDER="logs"
-[ ! -d "$BASEDIR/$LOGFOLDER" ] && { mkdir -p $BASEDIR/$LOGFOLDER; }
 
 #log file to write out all the information
 LOGFILE="service.log"
@@ -48,11 +44,26 @@ filename=""
 
 #config file
 CONFIGFILE="fimmda.properties"
-[ ! -f $BASEDIR/$source_folder/$CONFIGFILE ] && { echo "Config file does not exist. Exiting"; exit 1; }
 
 #MDIT folder and MDIT commands
 mdit_folder="../"
 mdit_command="./marketdataInterface.sh -f "
+
+######################################
+#check and create input folder if no exist
+[ ! -d $BASEDIR/$input_folder ] && { mkdir -p $BASEDIR/$input_folder; }
+
+#check and create output folder if no exist
+[ ! -d $BASEDIR/$output_folder ] && { mkdir -p $BASEDIR/$output_folder; }
+
+#check if source folder exists
+[ ! -d $BASEDIR/$source_folder ] && { echo "Cannot find source folder. Exiting.."; exit 1; } 
+
+#check if log folder exists
+[ ! -d "$BASEDIR/$LOGFOLDER" ] && { mkdir -p $BASEDIR/$LOGFOLDER; }
+
+#check if config file exists
+[ ! -f $BASEDIR/$source_folder/$CONFIGFILE ] && { echo "Config file does not exist. Exiting"; exit 1; }
 
 #move to base dir folder in case this script is triggered remotely from another place
 cd $BASEDIR
@@ -66,6 +77,7 @@ function writeToLog() {
 
 #================================================
 #Function run_mdit, to execute the MDIT file
+#print out result whether it is OK or FAILED 
 function run_mdit() {
 	#Unsetting the IFS
 	IFS=$SAVEIFS
@@ -92,7 +104,10 @@ function run_mdit() {
 	SAVEIFS=$IFS
 	IFS=$(echo -en "\n\b")
 }
-
+###########################################
+#run_transform
+#invoke transfrom module
+#read output to print out to either OK or FAILED status
 function run_transform() {
 	#Unsetting the IFS
 	IFS=$SAVEIFS
@@ -117,6 +132,9 @@ function run_transform() {
 	IFS=$(echo -en "\n\b")
 }
 ###############################################
+#run_fimmda
+#loop through input folder and send the file to transformation module
+#then pick up output file and send to MDIT
 function run_fimmda() {
 	#Set IFS setting is to prevent the space in the filename
 	SAVEIFS=$IFS
@@ -165,6 +183,8 @@ function run_fimmda() {
 	#turn IFS back
 	IFS=$SAVEIFS
 }
+########################################################
+#main programm
 case "$1" in
       --daemon)
 			#write output, error and everythihng to log file
