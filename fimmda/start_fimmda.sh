@@ -37,8 +37,14 @@ LOGFOLDER="logs"
 #log file to write out all the information
 LOGFILE="service.log"
 
+#result file
+RESULTFILE="output.log"
+
 #pid file to kill off the daemon 
 PIDFILE="service.pid"
+
+#filename
+filename=""
 
 #config file
 CONFIGFILE="fimmda.properties"
@@ -57,6 +63,7 @@ function writeToLog() {
 	timeAndDate=$(date +"%Y-%m-%d %T,%3N")
 	echo "$timeAndDate - $1"
 }
+
 #================================================
 #Function run_mdit, to execute the MDIT file
 function run_mdit() {
@@ -64,13 +71,52 @@ function run_mdit() {
 	IFS=$SAVEIFS
 	
 	#run the command
-	$BASEDIR/$mdit_folder/$mdit_command $1
-	
+	output=$($BASEDIR/$mdit_folder/$mdit_command $1 |
+	while IFS= read -r line
+	do
+		if [ "MDRS answer/log status: 'OK'" == "$line" ]; then
+			echo "OK"
+			break
+		fi
+	done
+	)
+
+	if [ "OK" == "$output" ]; then
+		writeToLog "[OK] $filename was succesfull"| tee -a $BASEDIR/$LOGFOLDER/$RESULTFILE 
+	else
+		writeToLog "[FAILED] $filename was unsuccesfull"| tee -a $BASEDIR/$LOGFOLDER/$RESULTFILE 
+
+	fi
+			
 	#resetting the IFS
 	SAVEIFS=$IFS
 	IFS=$(echo -en "\n\b")
 }
 
+function run_transform() {
+	#Unsetting the IFS
+	IFS=$SAVEIFS
+	
+	#run the command
+        output=$($python_command $BASEDIR/$source_folder/main.py $filename| 
+	while IFS= read -r line
+	do
+		if [[  "$line" == *"[ERROR]"* ]]; then
+			echo "KO"
+			break
+		fi
+	done
+	)
+
+	if [ "KO" == "$output" ]; then
+		writeToLog "[FAILED] $filename was unsuccesfull" | tee -a $BASEDIR/$LOGFOLDER/$RESULTFILE 
+	fi
+			
+	#resetting the IFS
+	SAVEIFS=$IFS
+	IFS=$(echo -en "\n\b")
+}
+###############################################
 function run_fimmda() {
 	#Set IFS setting is to prevent the space in the filename
 	SAVEIFS=$IFS
@@ -91,7 +137,8 @@ function run_fimmda() {
 			
 			#execute the command to transform the source csv to MDIT csv format
 			writeToLog "calling the transformation module"
-			$python_command $BASEDIR/$source_folder/main.py $filename
+			#$python_command $BASEDIR/$source_folder/main.py $filename
+			run_transform
 			
 			#once the file is ready send it to mdit
 			#remove the input file

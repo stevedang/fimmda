@@ -1,0 +1,13 @@
+currency,type,generator,market,maturity,bid,ask,askSpread,bidSpread
+INR,Dep.Gen.,\INR CP,,30D,6.3313,6.3313,,
+INR,Dep.Gen.,\INR CP,,60D,6.2625,6.2625,,
+INR,Dep.Gen.,\INR CP,,90D,6.3125,6.3125,,
+INR,Dep.Gen.,\INR CP,,120D,6.4242,6.4242,,
+INR,Dep.Gen.,\INR CP,,150D,6.5358,6.5358,,
+INR,Dep.Gen.,\INR CP,,180D,6.6475,6.6475,,
+INR,Dep.Gen.,\INR CP,,210D,6.6887,6.6887,,
+INR,Dep.Gen.,\INR CP,,240D,6.7298,6.7298,,
+INR,Dep.Gen.,\INR CP,,270D,6.7710,6.7710,,
+INR,Dep.Gen.,\INR CP,,300D,6.8122,6.8122,,
+INR,Dep.Gen.,\INR CP,,330D,6.8533,6.8533,,
+INR,Dep.Gen.,\INR CP,,364D,6.9000,6.9000,,
