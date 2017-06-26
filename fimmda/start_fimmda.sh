@@ -71,22 +71,22 @@ function run_mdit() {
 	IFS=$SAVEIFS
 	
 	#run the command
-	output=$($BASEDIR/$mdit_folder/$mdit_command $1 |
-	while IFS= read -r line
-	do
-		if [ "MDRS answer/log status: 'OK'" == "$line" ]; then
-			echo "OK"
-			break
-		fi
-	done
-	)
+	TEMPFILE=/tmp/fimmda_log_$$.log
+	$BASEDIR/$mdit_folder/$mdit_command $1 3>&1 2>&1 1>&3 | tee -a $TEMPFILE
+	
+	LASTPID=$!
 
-	if [ "OK" == "$output" ]; then
+	while kill -0 $LASTPID; do
+		sleep 1
+	done
+
+	if grep "MDRS answer/log status: 'OK'" $TEMPFILE > /dev/null 
+	then
 		writeToLog "[OK] $filename was succesfull"| tee -a $BASEDIR/$LOGFOLDER/$RESULTFILE 
 	else
 		writeToLog "[FAILED] $filename was unsuccesfull"| tee -a $BASEDIR/$LOGFOLDER/$RESULTFILE 
-
 	fi
+	rm $TEMPFILE
 			
 	#resetting the IFS
 	SAVEIFS=$IFS
