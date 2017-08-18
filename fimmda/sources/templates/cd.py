@@ -11,12 +11,15 @@ from mapping.fimmdaException import *
 log = logging.getLogger(__name__)
 #from  utilities import contains_header, contains_same_number_of_columns
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
-# Main constants
+# Main configuration from fimmda.properties
+config.read("sources/fimmda.properties")
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
+#==============================================================================
+# Mapping
+config.read("sources/mapping/fimmda.mapping")
 input_file = ""
 output_file = config.get("CD","output_file")
 csv_header = config.get("CD","csv_header")

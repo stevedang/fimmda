@@ -1,20 +1,4 @@
 #==============================================================================
-[General]
-demiliter= ,
-input_folder = ./input/
-output_folder = ./output/
-archive_folder = ./archive/
-#==============================================================================
-# setting to clasify the input files
-[Files]
-tbill_file = FIMMDA_TBILL_DAILY
-zeroSpread_file = FIMMDA_ZERO SPREAD_DAILY
-parSpread_file = FIMMDA_PAR SPREAD_DAILY
-parYield_file = FIMMDA_PAR_YIELD_DAILY
-cp_file = FIMMDA_CP_DAILY
-cd_file = FIMMDA_CD_DAILY
-zcyc_file = FIMMDA_ZERO CURVE_ZCYC_DAILY
-#==============================================================================
 # all constanst use for tbill
 [TBILL]
 csv_header = Tenor (Days),Benchmark YTM (%),Discount Yield

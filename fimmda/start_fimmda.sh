@@ -16,7 +16,7 @@ fi
 BASEDIR=$(dirname $0)
 
 #time each loop in seconds, by default it is 60 seconds
-LOOPTIME=60
+LOOPTIME=2
 
 #input folder where we scan and pick up the file
 input_folder="input"

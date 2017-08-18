@@ -10,26 +10,15 @@ from os.path import isfile, join
 from datetime import datetime
 import ConfigParser
 from mapping.fimmdaException import *
-from templates import tbill, zcyc, zeroSpread, cd, cp, parSpread, parYield, utilities
+from templates import tbill, zcyc, zeroSpread, cd, cp, parSpread, parYield
 
 #define the log at root level
 logging.basicConfig(format='%(asctime)s - [%(levelname)s][%(module)s] - %(message)s', stream=sys.stdout, level=logging.DEBUG)
 log = logging.getLogger()
-#log = utilities.setup_custom_logger('root')
-#log.setLevel(logging.DEBUG)
-#ch = logging.StreamHandler(sys.stdout)
-#ch.setFormatter(format)
-#log.addHandler(ch)
-
-
 
 def main():
-    #sys.path.append("sources/mapping")
-    #from exceptions.py import *
-
     #Read the config Parser from fimmda.properties
     config = ConfigParser.ConfigParser()
-    #config.read("sources/fimmda.properties")
 
     #If it is win32 (cygwin) use python.exe, otherwise use python2.7
     if "win32" == sys.platform:

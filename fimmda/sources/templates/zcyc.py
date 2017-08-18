@@ -5,19 +5,22 @@ Created on Wed Mar 01 10:10:57 2017
 """
 import os,csv, re, sys,logging
 import ConfigParser
-import utilities
+from utilities import utilities
 from mapping.fimmdaException import *
 
 #define the log
 log = logging.getLogger(__name__)
 #from  utilities import contains_header, contains_same_number_of_columns
 config = ConfigParser.ConfigParser()
-config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
-# Main constants
+# Main configuration from fimmda.properties
+config.read("sources/fimmda.properties")
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
+#==============================================================================
+# Mapping
+config.read("sources/mapping/fimmda.mapping")
 input_file = ""
 output_file = config.get("ZCYC","output_file")
 csv_header = config.get("ZCYC","csv_header")
