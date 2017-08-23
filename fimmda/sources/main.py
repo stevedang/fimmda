@@ -1,25 +1,40 @@
 """
-Created on Wed Mar 01 10:10:57 2017
-@author: @author: Murex Integration 2017
+Murex Integration 2017
+Command to run:
+main.py <filename>
+---------------------------------
+Change log:
+20170822: 1st release
 """
+##########################################
+
 import os, sys, shutil, subprocess, logging
 from logging.handlers import RotatingFileHandler
 from logging import handlers
+from logging.config import fileConfig
 from os import mkdir, listdir
 from os.path import isfile, join
 from datetime import datetime
 import ConfigParser
-from mapping.fimmdaException import *
+from mapping.TransformationException import *
 from templates import tbill, zcyc, zeroSpread, cd, cp, parSpread, parYield
 
+
+#Read the config Parser from properties.ini and mapping.ini
+config = ConfigParser.ConfigParser()
+config2 = ConfigParser.ConfigParser()
+config.read("sources/properties.ini")
+config2.read("sources/mapping/mapping.ini")
+
 #define the log at root level
-logging.basicConfig(format='%(asctime)s - [%(levelname)s][%(module)s] - %(message)s', stream=sys.stdout, level=logging.DEBUG)
+#logging.basicConfig(format='%(asctime)s - [%(levelname)s][%(module)s] - %(message)s', stream=sys.stdout, mylevel)
+fileConfig("sources/logging.ini")
 log = logging.getLogger()
 
 def main():
-    #Read the config Parser from fimmda.properties
+    #Read the config Parser from properties.ini and mapping.ini
     config = ConfigParser.ConfigParser()
-
+    config2 = ConfigParser.ConfigParser()
     #If it is win32 (cygwin) use python.exe, otherwise use python2.7
     if "win32" == sys.platform:
         python_command="python.exe"
@@ -36,7 +51,8 @@ def main():
     output_file = ""
 
     #create a new folder by the name and the pid of the current process
-    config.read("sources/fimmda.properties")
+    config.read("sources/properties.ini")
+    config2.read("sources/mapping/mapping.ini")
     input_folder = config.get("General","input_folder")
     archive_folder = config.get("General","archive_folder")
     output_folder = config.get("General","output_folder")
@@ -57,25 +73,25 @@ def main():
     error = ""
     #If the file name contains the format of TBILL file name
     try:
-        if config.get("Files","tbill_file") in input_file:
+        if config2.get("Files","tbill_file") in input_file:
             tbill.main(input_file)
         #If the file name contains the format of ZERO Spread file name
-        elif config.get("Files","zeroSpread_file") in input_file:
+        elif config2.get("Files","zeroSpread_file") in input_file:
             zeroSpread.main(input_file)
         #If the file name contains the format of Par Spread file name
-        elif config.get("Files","parSpread_file") in input_file:
+        elif config2.get("Files","parSpread_file") in input_file:
             parSpread.main(input_file)
         #If the file name contains the format of Par Yield file name
-        elif config.get("Files","parYield_file") in input_file:
+        elif config2.get("Files","parYield_file") in input_file:
             parYield.main(input_file)
         #If the file name contains the format of CP file name
-        elif config.get("Files","cp_file") in input_file:
+        elif config2.get("Files","cp_file") in input_file:
             cp.main(input_file)
         #If the file name contains the format of CD file name
-        elif config.get("Files","cd_file") in input_file:
+        elif config2.get("Files","cd_file") in input_file:
             cd.main(input_file)
         #If the file name contains the format of ZCYC file name
-        elif config.get("Files","zcyc_file") in input_file:
+        elif config2.get("Files","zcyc_file") in input_file:
             zcyc.main(input_file)
         #If the file has the wrong format, no output file is generated
         # error message is printed out
@@ -84,7 +100,7 @@ def main():
             error =  ERROR_101 + input_file
     except IndexError as e:
         log.error("{}".format(e.message))
-    except FimmdaException as e:
+    except TransformationException as e:
         log.error("{}".format(e.message))
         sys.exit(0)
 

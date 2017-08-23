@@ -11,7 +11,7 @@ class ExceptionTemplate(Exception):
 		
         return self.__class__(*(self.args + args))
 		
-class TranformationException(ExceptionTemplate):
+class TransformationException(ExceptionTemplate):
 	pass
 
 #List of Exceptions

@@ -1,29 +1,31 @@
 #!/usr/bin/env python
 """
-Created on Wed Mar 01 10:10:57 2017
-@author: Murex Integration 2017
+Murex Integration 2017
+----------------------
+Change log:
+20170822: 1st release
 """
-#==============================================================================
-    
+##########################################
+   
 import os, csv, re, sys,logging
 import ConfigParser
 from utilities import utilities
-from mapping.fimmdaException import * 
+from mapping.TransformationException import * 
 
 #define the log
 log = logging.getLogger(__name__)
 
 config = ConfigParser.ConfigParser()
 #==============================================================================
-# Main configuration from fimmda.properties
-config.read("sources/fimmda.properties")
+# Main configuration from properties.ini
+config.read("sources/properties.ini")
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
 
 #==============================================================================
 # Mapping
-config.read("sources/mapping/fimmda.mapping")
+config.read("sources/mapping/mapping.ini")
 input_file = ""
 csv_header = config.get("PAR_YIELD","csv_header")
 output_file = config.get("PAR_YIELD","output_file")
@@ -51,10 +53,10 @@ def main(args):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-        raise FimmdaException(ERROR_103 + source_file)
+        raise TransformationException(ERROR_103 + source_file)
     #if there is nothing int the file, just stop
     if not dataList:
-        raise FimmdaException(ERROR_104)		
+        raise TransformationException(ERROR_104)		
     #==============================================================================
     #write to the new file
     try:
@@ -79,7 +81,7 @@ def main(args):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-        raise FimmdaException(ERROR_102 + destination_file)
+        raise TransformationException(ERROR_102 + destination_file)
 #==============================================================================
 if __name__ == "__main__":
     main(sys.argv[1:])    

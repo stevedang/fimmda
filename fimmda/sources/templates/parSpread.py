@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 01 10:10:57 2017
-@author: @author: Murex Integration 2017
+Murex Integration 2017
+----------------------
+Change log:
+20170822: 1st release
 """
+##########################################
 #from  utilities import *
 import os, csv, re, sys, os, argparse, logging
 import ConfigParser
 from utilities import utilities
-from mapping.fimmdaException import *
+from mapping.TransformationException import *
 
 #define the log
 log = logging.getLogger(__name__)
@@ -16,14 +19,14 @@ log = logging.getLogger(__name__)
 config = ConfigParser.ConfigParser()
 
 #==============================================================================
-# Main configuration from fimmda.properties
-config.read("sources/fimmda.properties")
+# Main configuration from properties.ini
+config.read("sources/properties.ini")
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
 #==============================================================================
 #Mapping 
-config.read("sources/mapping/fimmda.mapping")
+config.read("sources/mapping/mapping.ini")
 table_name_list = [
                    ["PSU & Fis", "PSU"],
                    ["NBFCs","NBFC"],
@@ -135,7 +138,7 @@ def main(args):
     #if there is nothing int the file, just stop
     if not tableList:
         log.error("{}".format(ERROR_104))
-        raise FimmdaException(ERROR_104)
+        raise TransformationException(ERROR_104)
     #==============================================================================
     #write to the new file
     try:

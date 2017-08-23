@@ -24,7 +24,7 @@ config_parser()
 
 ##############################
 #config file
-CONFIGFILE="sources/fimmda.properties"
+CONFIGFILE="sources/properties.ini"
 
 load_variables()
 {
@@ -65,7 +65,7 @@ load_variables()
 	filename=""
 
 	#config file
-	#CONFIGFILE="fimmda.properties"
+	#CONFIGFILE="properties.ini"
 
 	#MDIT folder and MDIT commands
 	config_parser $CONFIGFILE mdit_folder
@@ -97,7 +97,15 @@ function writeToLog() {
 	timeAndDate=$(date +"%Y-%m-%d %T,%3N")
 	echo "$timeAndDate - $1"
 }
-
+#================================================
+#Function check if any service is running
+#kill all current processes
+function killMe(){
+    local me=`basename "$0"`
+    cat $BASEDIR/$LOGFOLDER/$PIDFILE| $awk_command '{ system("kill -TERM -"$1);}' 2> /dev/null
+    > $BASEDIR/$LOGFOLDER/$PIDFILE
+    ps -ef| grep $me| grep -v $$| grep -v grep | $awk_command '{ system("kill -9 "$2);}' 2> /dev/null
+}
 #================================================
 #Function run_mdit, to execute the MDIT file
 #print out result whether it is OK or FAILED 
@@ -106,13 +114,13 @@ function run_mdit() {
 	IFS=$SAVEIFS
 	
 	#run the command
-	TEMPFILE=/tmp/fimmda_log_$$.log
+	TEMPFILE=/tmp/transformation_log_$$.log
 	echo $BASEDIR/$mdit_folder/$mdit_command $1 3>&1 2>&1 1>&3 | tee -a $TEMPFILE
 	$BASEDIR/$mdit_folder/$mdit_command $1 3>&1 2>&1 1>&3 | tee -a $TEMPFILE
 	
 	LASTPID=$!
 
-	while kill -0 $LASTPID; do
+	while kill -0 $LASTPID 2>/dev/null; do
 		sleep 1
 	done
 
@@ -137,29 +145,39 @@ function run_transform() {
 	IFS=$SAVEIFS
 	
 	#run the command
-        output=$($python_command $BASEDIR/$source_folder/main.py $filename| 
-	while IFS= read -r line
-	do
-		if [[  "$line" == *"[ERROR]"* ]]; then
-			echo "KO"
-			break
-		fi
-	done
-	)
+	TEMPFILE=/tmp/transformation_log_$$.log
 
-	if [ "KO" == "$output" ]; then
-		writeToLog "[FAILED] $filename was unsuccesfull" | tee -a $BASEDIR/$LOGFOLDER/$RESULTFILE 
+	#return the result
+	local __myresult=$2
+
+	echo $python_command $BASEDIR/$source_folder/main.py $1 3>&1 2>&1 1>&3 | tee -a $TEMPFILE
+	$python_command $BASEDIR/$source_folder/main.py $1 3>&1 2>&1 1>&3 | tee -a $TEMPFILE
+
+	LASTPID=$!
+
+	while kill -0 $LASTPID 2> /dev/null; do
+		sleep 1
+	done
+
+	if grep "ERROR" $TEMPFILE > /dev/null 
+	then
+		writeToLog "[FAILED] $1 was unsuccesfull"| tee -a $BASEDIR/$LOGFOLDER/$RESULTFILE 
+		__myresult="FAILED"
+	else
+		__myresult="OK"
 	fi
-			
+
+	rm $TEMPFILE
+	
 	#resetting the IFS
 	SAVEIFS=$IFS
 	IFS=$(echo -en "\n\b")
 }
 ###############################################
-#run_fimmda
+#run_service
 #loop through input folder and send the file to transformation module
 #then pick up output file and send to MDIT
-function run_fimmda() {
+function run_service() {
 	#Set IFS setting is to prevent the space in the filename
 	SAVEIFS=$IFS
 	IFS=$(echo -en "\n\b")
@@ -178,14 +196,19 @@ function run_fimmda() {
 			filename=`basename $file`
 			
 			#execute the command to transform the source csv to MDIT csv format
-			writeToLog "calling the transformation module"
-			#$python_command $BASEDIR/$source_folder/main.py $filename
-			run_transform
+			writeToLog "Calling the transformation module for $filename"
+			run_transform $filename $result
 			
 			#once the file is ready send it to mdit
 			#remove the input file
 			rm $file 
-			
+
+			#if transformation failed, skip the mdit
+			if [ "$result" = "FAILED" ]; then
+				writeToLog "Failed to transform $filename"
+				continue
+			fi
+
 			#scan the output folder and move all the newly created file to MDIT
 			writeToLog "Searching output file in  $BASEDIR/$output_folder"
 			for file2 in `find $BASEDIR/$output_folder -name '*.csv'`
@@ -216,6 +239,9 @@ load_variables
 #move to base dir folder in case this script is triggered remotely from another place
 cd $BASEDIR
 
+#kill other process if they are still running
+killMe
+
 case "$1" in
       --daemon)
 			#write output, error and everythihng to log file
@@ -223,13 +249,13 @@ case "$1" in
 			exec 1>>	$BASEDIR/$LOGFOLDER/$LOGFILE
 			exec 2>>	$BASEDIR/$LOGFOLDER/$LOGFILE
 			writeToLog "Starting deamon mode in background "
-			run_fimmda & 
+			run_service & 
             ;;
       --normal)
             writeToLog "Starting test mode in foreground..click Ctrl-D to stop"
 			#write output and everything to both file and console		
 			echo $$ >> $BASEDIR/$LOGFOLDER/$PIDFILE
-			run_fimmda | tee $BASEDIR/$LOGFOLDER/$LOGFILE 
+			run_service | tee $BASEDIR/$LOGFOLDER/$LOGFILE 
             ;;
        --help)
             echo "Usage: $0 --[option]"

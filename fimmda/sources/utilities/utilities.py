@@ -1,22 +1,29 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
-Created on Wed Mar 01 10:10:57 2017
-@author: @author: Murex Integration 2017
+Murex Integration 2017
+----------------------
+Change log:
+20170822: 1st release
 """
+################################################################
 import logging, sys, os
-from mapping.fimmdaException import * 
+from mapping.TransformationException import * 
 
 #define the log
 log = logging.getLogger(__name__)
 
+################################################################
+#check if a variable is a number
 def isNumber(s):
     try:
         complex(s) # for int, long, float and complex
     except ValueError:
         return False
     return True
-    
+################################################################
+# get maturity from a string
+# translates the maturity from figures 0.5, 1.5, 2.5 to 6M, 18M, 24M    
+# and 1.0, 2.0 etc to 1Y, 2Y
 def getMaturity(str2):
     if not isNumber(str2):
         return str2
@@ -32,4 +39,5 @@ def getMaturity(str2):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-        raise FimmdaException(ERROR_105+" maturity: "+str2)
+		# if there is an error throw error code 105 to the outer function
+        raise TransformationException(ERROR_105+" maturity: "+str2)

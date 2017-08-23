@@ -17,7 +17,7 @@ config_parser()
 
 ##############################
 #config file
-CONFIGFILE="sources/fimmda.properties"
+CONFIGFILE="sources/properties.ini"
 
 load_variables()
 {
@@ -58,7 +58,7 @@ load_variables()
 	filename=""
 
 	#config file
-	#CONFIGFILE="fimmda.properties"
+	#CONFIGFILE="properties.ini"
 
 	#MDIT folder and MDIT commands
 	config_parser $CONFIGFILE mdit_folder
@@ -93,7 +93,7 @@ cd $BASEDIR
 #in case of errors, output to /dev/null
 exec 2>/dev/null
 #kill the services
-echo "Killing the fimmda service"
+echo "Killing the service"
 cat $BASEDIR/$LOGFOLDER/$PIDFILE| $awk_command '{ system("kill -TERM -"$1);}'
 ps -ef| grep start_service| grep -v grep | $awk_command '{ system("kill -9 "$2);}'
 
@@ -113,8 +113,5 @@ find $BASEDIR/$archive_folder/* -type d -exec rm -rf {} +
 
 #empty the service.pid
 > $BASEDIR/$LOGFOLDER/$PIDFILE
-
-
-
 
 
