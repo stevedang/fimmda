@@ -7,7 +7,7 @@ Change log:
 """
 ################################################################
 import logging, sys, os
-from mapping.TransformationException import * 
+#from utilities.TransformationException import * 
 
 #define the log
 log = logging.getLogger(__name__)

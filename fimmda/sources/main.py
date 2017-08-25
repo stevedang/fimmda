@@ -16,19 +16,19 @@ from os import mkdir, listdir
 from os.path import isfile, join
 from datetime import datetime
 import ConfigParser
-from mapping.TransformationException import *
+from utilities.TransformationException import *
 from templates import tbill, zcyc, zeroSpread, cd, cp, parSpread, parYield
 
 
 #Read the config Parser from properties.ini and mapping.ini
 config = ConfigParser.ConfigParser()
 config2 = ConfigParser.ConfigParser()
-config.read("sources/properties.ini")
+config.read("sources/config/properties.ini")
 config2.read("sources/mapping/mapping.ini")
 
 #define the log at root level
 #logging.basicConfig(format='%(asctime)s - [%(levelname)s][%(module)s] - %(message)s', stream=sys.stdout, mylevel)
-fileConfig("sources/logging.ini")
+fileConfig("sources/config/logging.ini")
 log = logging.getLogger()
 
 def main():
@@ -51,7 +51,7 @@ def main():
     output_file = ""
 
     #create a new folder by the name and the pid of the current process
-    config.read("sources/properties.ini")
+    config.read("sources/config/properties.ini")
     config2.read("sources/mapping/mapping.ini")
     input_folder = config.get("General","input_folder")
     archive_folder = config.get("General","archive_folder")

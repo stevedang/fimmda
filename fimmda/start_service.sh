@@ -24,7 +24,7 @@ config_parser()
 
 ##############################
 #config file
-CONFIGFILE="sources/properties.ini"
+CONFIGFILE="sources/config/properties.ini"
 
 load_variables()
 {

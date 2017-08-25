@@ -9,7 +9,7 @@ Change log:
 #from  utilities import *
 import os, csv, sys, re, logging
 import ConfigParser
-from mapping.TransformationException import * 
+from utilities.TransformationException import * 
 
 #define the log
 log = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 config = ConfigParser.ConfigParser()
 #==============================================================================
 # Main configuration from properties.ini
-config.read("sources/properties.ini")
+config.read("sources/config/properties.ini")
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
