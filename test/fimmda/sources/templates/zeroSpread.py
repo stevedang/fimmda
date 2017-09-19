@@ -1,35 +1,21 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
-Title                                       :zeroSpread.py
-Description                        :This module defines the transformation logic for Zero Spread
-Author                                  :DANG Steve
-Python_version                :2.7
--------------------------------
-Change log:
-Version                                Date                                      Who                                      Description
-v1.0                                        20170822                             Steve                                    1st release
-
+Created on Wed Mar 01 10:10:57 2017
+@author: @author: Murex Integration 2017
 """
-##########################################
 #from  utilities import *
 import csv, re, sys, os, argparse, logging
 import ConfigParser
-from utilities import utilities
-from utilities.TransformationException import *
+import utilities
+from mapping.fimmdaException import *
 
 #define the log
 log = logging.getLogger(__name__)
 
 config = ConfigParser.ConfigParser()
+config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
-# Main configuration from properties.ini
-config.read("sources/config/properties.ini")
-demiliter= config.get("General","demiliter")
-input_folder = config.get("General","input_folder")
-output_folder = config.get("General","output_folder")
-#==============================================================================
-#Mapping 
-config.read("sources/mapping/mapping.ini")
 table_name_list = [
                    ["PSU & Fis", "PSU"],
                    ["NBFCs","NBFC"],
@@ -40,6 +26,10 @@ table_name_list = [
                    ["AT1","AT1"]                   
                    ]
 rating_label_list = config.get("ZERO_SPREAD","rating_label_list").split(",")
+#rating_label_list = ["AAA","AA+","AA","AA-","A+","A","A-","BBB+","BBB","BBB-","BB+","BB","Unrated"]
+demiliter= config.get("General","demiliter")
+input_folder = config.get("General","input_folder")
+output_folder = config.get("General","output_folder")
 csv_header = config.get("ZERO_SPREAD","csv_header")
 output_file = config.get("ZERO_SPREAD","output_file")
 input_file = ""
@@ -139,7 +129,7 @@ def main(args):
     #if there is nothing int the file, just stop
     if not tableList:
         log.error("{}".format(ERROR_104))
-        raise TransformationException(ERROR_104)
+        raise FimmdaException(ERROR_104)
     #==============================================================================
     #write to the new file
     try:

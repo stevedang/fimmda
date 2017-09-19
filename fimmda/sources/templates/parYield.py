@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 """
-Murex Integration 2017
-----------------------
+Title                                       :parYield.py
+Description                        :This module defines the transformation logic for ParYeild
+Author                                  :DANG Steve
+Python_version                :2.7
+-------------------------------
 Change log:
-20170822: 1st release
+Version                                Date                                      Who                                      Description
+v1.0                                        20170822                             Steve                                    1st release
+
 """
 ##########################################
    

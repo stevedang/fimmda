@@ -1,4 +1,15 @@
 #!/bin/bash
+###
+#name:                                stop_service.sh
+#author:                              Steve
+#modified date:               01-Aug-2017
+#description:                     To stop transformation service for current folder/interface
+#usage:                                stop_service.sh
+
+
+# Change Log
+# Author               Date                     Changes
+###
 ##############################
 if [ "$OS_TYPE" = "SunOS" ]; then
 	awk_command="nawk" #if it is solaris

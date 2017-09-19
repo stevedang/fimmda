@@ -1,45 +1,37 @@
 #!/usr/bin/env python
 """
-Title                                       :zcyc.py
-Description                        :This module defines the transformation logic for ZCYC
-Author                                  :DANG Steve
-Python_version                :2.7
--------------------------------
-Change log:
-Version                                Date                                      Who                                      Description
-v1.0                                        20170822                             Steve                                    1st release
-
+Created on Wed Mar 01 10:10:57 2017
+@author: Murex Integration 2017
 """
-##########################################
-import os,csv, re, sys,logging
+#==============================================================================
+    
+import os, csv, re, sys,logging
 import ConfigParser
-from utilities import utilities
-from utilities.TransformationException import *
+import utilities
+from mapping.fimmdaException import * 
 
 #define the log
 log = logging.getLogger(__name__)
-#from  utilities import contains_header, contains_same_number_of_columns
+
 config = ConfigParser.ConfigParser()
+config.read("sources/mapping/fimmda.mapping")
+
 #==============================================================================
-# Main configuration from properties.ini
-config.read("sources/config/properties.ini")
+# Main constants
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
-#==============================================================================
-# Mapping
-config.read("sources/mapping/mapping.ini")
 input_file = ""
-output_file = config.get("ZCYC","output_file")
-csv_header = config.get("ZCYC","csv_header")
-row_format_reg = config.get("ZCYC","row_format_reg")
-header_row = config.get("ZCYC","header_row").split(",")
-fixed_data = config.get("ZCYC","fixed_data").split(",")
+csv_header = config.get("PAR_YIELD","csv_header")
+output_file = config.get("PAR_YIELD","output_file")
+row_format_reg = config.get("PAR_YIELD","row_format_reg")
+header_row = config.get("PAR_YIELD","header_row").split(",")
+fixed_data = config.get("PAR_YIELD","fixed_data").split(",")
 #==============================================================================
 def main(args):
     input_file = args
-    source_file = input_folder + input_file
-    log.info("Reading ZCYC input file {}".format(source_file))
+    source_file =  input_folder + input_file
+    log.info("Reading Par Yield input file {}".format(source_file))
 
     dataList = []
     # open csv file
@@ -52,29 +44,29 @@ def main(args):
                 if bool(re.search(row_format_reg, line)): #search if the line format is good            
                     dataList.append(line.split(demiliter))
         textfile.close
-    except Exception as e:
+    except Exception as e:        
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-        raise TransformationException(ERROR_103 + source_file)
+        raise FimmdaException(ERROR_103 + source_file)
     #if there is nothing int the file, just stop
     if not dataList:
-        raise TransformationException(ERROR_104)
+        raise FimmdaException(ERROR_104)		
     #==============================================================================
     #write to the new file
     try:
-        destination_file = output_folder + output_file    
+        destination_file = output_folder + output_file    ;
         with open(destination_file, 'wb') as csv_out:
             #write the header    
-            writer = csv.DictWriter(csv_out, fieldnames=header_row)
-            writer.writeheader()     
+            writer = csv.DictWriter(csv_out, fieldnames=header_row);
+            writer.writeheader();     
             #write the rest of data    
-            mywriter = csv.writer(csv_out)    
+            mywriter = csv.writer(csv_out)  ;      
             for list2 in dataList:
-                dataNode = list(fixed_data)
-                dataNode.append(utilities.getMaturity(list2[0]))
-                dataNode.append(list2[1])
-                dataNode.append(list2[1])
+                dataNode = list(fixed_data);
+                dataNode.append(utilities.getMaturity(list2[0]));
+                dataNode.append(list2[1]);
+                dataNode.append(list2[1]);
                 dataNode.append("");
                 dataNode.append("");
                 mywriter.writerows([dataNode])
@@ -84,7 +76,7 @@ def main(args):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-        raise TransformationException(ERROR_102 + destination_file)
+        raise FimmdaException(ERROR_102 + destination_file)
 #==============================================================================
 if __name__ == "__main__":
-    main(sys.argv[1:]) 
+    main(sys.argv[1:])    

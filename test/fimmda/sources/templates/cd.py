@@ -1,44 +1,33 @@
 #!/usr/bin/env python
 """
-Title                                       :cp.py
-Description                        :This module defines the transformation logic for CP
-Author                                  :DANG Steve
-Python_version                :2.7
--------------------------------
-Change log:
-Version                                Date                                      Who                                      Description
-v1.0                                        20170822                             Steve                                    1st release
-
+Created on Wed Mar 01 10:10:57 2017
+@author: Murex Integration Singapore
 """
-##########################################
-import os, csv, re, sys, logging
+import csv, re, sys, logging, os
 import ConfigParser
-from utilities.TransformationException import * 
+from mapping.fimmdaException import * 
 
 #define the log
 log = logging.getLogger(__name__)
 #from  utilities import contains_header, contains_same_number_of_columns
 config = ConfigParser.ConfigParser()
+config.read("sources/mapping/fimmda.mapping")
 #==============================================================================
-# Main configuration from properties.ini
-config.read("sources/config/properties.ini")
+# Main constants
 demiliter= config.get("General","demiliter")
 input_folder = config.get("General","input_folder")
 output_folder = config.get("General","output_folder")
-#==============================================================================
-# Mapping
-config.read("sources/mapping/mapping.ini")
 input_file = ""
-output_file = config.get("TBILL","output_file")
-csv_header = config.get("CP","csv_header")
-row_format_reg = config.get("CP","row_format_reg")
-header_row = config.get("CP","header_row").split(",")
-fixed_data = config.get("CP","fixed_data").split(",")
+output_file = config.get("CD","output_file")
+csv_header = config.get("CD","csv_header")
+row_format_reg = config.get("CD","row_format_reg")
+header_row = config.get("CD","header_row").split(",")
+fixed_data = config.get("CD","fixed_data").split(",")
 #==============================================================================
 def main(args):
     input_file = args
     source_file = input_folder + input_file
-    log.info("Reading CP input file {}".format(source_file))
+    log.info("Reading CD input file {}".format(source_file))
 
     dataList = []
     # open csv file
@@ -55,15 +44,14 @@ def main(args):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-        raise TransformationException(ERROR_103 + source_file)
-
+        raise FimmdaException(ERROR_103 + source_file)
     #if there is nothing int the file, just stop
     if not dataList:
-        raise TransformationException(ERROR_104)
+        raise FimmdaException(ERROR_104)
     #==============================================================================
     #write to the new file
     try:
-        destination_file = output_folder+ output_file    
+        destination_file = output_folder + output_file    
         with open(destination_file, 'wb') as csv_out:
             #write the header    
             writer = csv.DictWriter(csv_out, fieldnames=header_row)
@@ -84,7 +72,7 @@ def main(args):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-        raise TransformationException(ERROR_102+destination_file)
-#==============================================================================		
+        raise FimmdaException(ERROR_102 + destination_file)
+#==============================================================================
 if __name__ == "__main__":
     main(sys.argv[1:]) 

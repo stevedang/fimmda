@@ -1,32 +1,18 @@
-#Title                              :mapping.ini
-#Description                        :This mapping defines the relationship between input file and the transformation module
-#Author                                  :DANG Steve
-#Python_version                :2.7
-#-------------------------------
-#Change log:
-#Version                                Date                                      Who                                      Description
-#v1.0                                        20170822                             Steve                                    1st release
-
+#==============================================================================
+[General]
+demiliter= ,
+input_folder = ./input/
+output_folder = ./output/
+archive_folder = ./archive/
+#==============================================================================
+# setting to clasify the input files
 [Files]
-#String to recognize it is TBILL file
 tbill_file = FIMMDA_TBILL_DAILY
-
-#String to recognize it is ZERRO SPREAD file
 zeroSpread_file = FIMMDA_ZERO SPREAD_DAILY
-
-#String to recognize it is PAR SPREAD file
 parSpread_file = FIMMDA_PAR SPREAD_DAILY
-
-#String to recognize it is PAR YIELD file
 parYield_file = FIMMDA_PAR_YIELD_DAILY
-
-#String to recognize it is CP file
 cp_file = FIMMDA_CP_DAILY
-
-#String to recognize it is CD file
 cd_file = FIMMDA_CD_DAILY
-
-#String to recognize it is ZERO CURVE file
 zcyc_file = FIMMDA_ZERO CURVE_ZCYC_DAILY
 #==============================================================================
 # all constanst use for tbill

@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-Murex Integration 2017
-----------------------
+Title                                       :TransformationException.py
+Description                        :This module defines the exceptions of the tool
+Author                                  :DANG Steve
+Python_version                :2.7
+-------------------------------
 Change log:
-20170822: 1st release
+Version                                Date                                      Who                                      Description
+v1.0                                        20170822                             Steve                                    1st release
+
 """
 class ExceptionTemplate(Exception):
     def __call__(self, *args):

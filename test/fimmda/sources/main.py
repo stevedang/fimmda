@@ -1,43 +1,36 @@
 """
-Title                                       :main.py
-Description                        :This module defines the starting point for transformation module
-Author                                  :DANG Steve
-Python_version                :2.7
--------------------------------
-Change log:
-Version                                Date                                      Who                                      Description
-v1.0                                        20170822                             Steve                                    1st release
-
+Created on Wed Mar 01 10:10:57 2017
+@author: @author: Murex Integration 2017
 """
-##########################################
-
 import os, sys, shutil, subprocess, logging
 from logging.handlers import RotatingFileHandler
 from logging import handlers
-from logging.config import fileConfig
 from os import mkdir, listdir
 from os.path import isfile, join
 from datetime import datetime
 import ConfigParser
-from utilities.TransformationException import *
-from templates import tbill, zcyc, zeroSpread, cd, cp, parSpread, parYield
-
-
-#Read the config Parser from properties.ini and mapping.ini
-config = ConfigParser.ConfigParser()
-config2 = ConfigParser.ConfigParser()
-config.read("sources/config/properties.ini")
-config2.read("sources/mapping/mapping.ini")
+from mapping.fimmdaException import *
+from templates import tbill, zcyc, zeroSpread, cd, cp, parSpread, parYield, utilities
 
 #define the log at root level
-#logging.basicConfig(format='%(asctime)s - [%(levelname)s][%(module)s] - %(message)s', stream=sys.stdout, mylevel)
-fileConfig("sources/config/logging.ini")
+logging.basicConfig(format='%(asctime)s - [%(levelname)s][%(module)s] - %(message)s', stream=sys.stdout, level=logging.DEBUG)
 log = logging.getLogger()
+#log = utilities.setup_custom_logger('root')
+#log.setLevel(logging.DEBUG)
+#ch = logging.StreamHandler(sys.stdout)
+#ch.setFormatter(format)
+#log.addHandler(ch)
+
+
 
 def main():
-    #Read the config Parser from properties.ini and mapping.ini
+    #sys.path.append("sources/mapping")
+    #from exceptions.py import *
+
+    #Read the config Parser from fimmda.properties
     config = ConfigParser.ConfigParser()
-    config2 = ConfigParser.ConfigParser()
+    #config.read("sources/fimmda.properties")
+
     #If it is win32 (cygwin) use python.exe, otherwise use python2.7
     if "win32" == sys.platform:
         python_command="python.exe"
@@ -54,8 +47,7 @@ def main():
     output_file = ""
 
     #create a new folder by the name and the pid of the current process
-    config.read("sources/config/properties.ini")
-    config2.read("sources/mapping/mapping.ini")
+    config.read("sources/fimmda.properties")
     input_folder = config.get("General","input_folder")
     archive_folder = config.get("General","archive_folder")
     output_folder = config.get("General","output_folder")
@@ -76,25 +68,25 @@ def main():
     error = ""
     #If the file name contains the format of TBILL file name
     try:
-        if config2.get("Files","tbill_file") in input_file:
+        if config.get("Files","tbill_file") in input_file:
             tbill.main(input_file)
         #If the file name contains the format of ZERO Spread file name
-        elif config2.get("Files","zeroSpread_file") in input_file:
+        elif config.get("Files","zeroSpread_file") in input_file:
             zeroSpread.main(input_file)
         #If the file name contains the format of Par Spread file name
-        elif config2.get("Files","parSpread_file") in input_file:
+        elif config.get("Files","parSpread_file") in input_file:
             parSpread.main(input_file)
         #If the file name contains the format of Par Yield file name
-        elif config2.get("Files","parYield_file") in input_file:
+        elif config.get("Files","parYield_file") in input_file:
             parYield.main(input_file)
         #If the file name contains the format of CP file name
-        elif config2.get("Files","cp_file") in input_file:
+        elif config.get("Files","cp_file") in input_file:
             cp.main(input_file)
         #If the file name contains the format of CD file name
-        elif config2.get("Files","cd_file") in input_file:
+        elif config.get("Files","cd_file") in input_file:
             cd.main(input_file)
         #If the file name contains the format of ZCYC file name
-        elif config2.get("Files","zcyc_file") in input_file:
+        elif config.get("Files","zcyc_file") in input_file:
             zcyc.main(input_file)
         #If the file has the wrong format, no output file is generated
         # error message is printed out
@@ -103,7 +95,7 @@ def main():
             error =  ERROR_101 + input_file
     except IndexError as e:
         log.error("{}".format(e.message))
-    except TransformationException as e:
+    except FimmdaException as e:
         log.error("{}".format(e.message))
         sys.exit(0)
 

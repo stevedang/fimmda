@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 """
-Murex Integration 2017
-----------------------
+Title                                       :cd.py
+Description                        :This module defines the transformation logic for CD
+Author                                  :DANG Steve
+Python_version                :2.7
+-------------------------------
 Change log:
-20170822: 1st release
+Version                                Date                                      Who                                      Description
+v1.0                                        20170822                             Steve                                    1st release
+
 """
 ##########################################
 import csv, re, sys, logging, os

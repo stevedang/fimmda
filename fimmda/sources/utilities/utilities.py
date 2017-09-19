@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 """
-Murex Integration 2017
-----------------------
+Title                                       :utilities.py
+Description                        :This module defines the utility functions used by the tool
+Author                                  :DANG Steve
+Python_version                :2.7
+-------------------------------
 Change log:
-20170822: 1st release
+Version                                Date                                      Who                                      Description
+v1.0                                        20170822                             Steve                                    1st release
+v1.1                                        20170919                             Steve                                    add getDate() function
+
 """
 ################################################################
 import logging, sys, os
@@ -41,3 +47,6 @@ def getMaturity(str2):
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
 		# if there is an error throw error code 105 to the outer function
         raise TransformationException(ERROR_105+" maturity: "+str2)
+################################################################
+#get date from a file name
+# for example FIMMDA_PARYIELD_DAILY_20170902.csv into RTSH_MUREX_EOD_20170902.csv 
