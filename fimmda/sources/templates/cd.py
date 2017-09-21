@@ -8,11 +8,11 @@ Python_version                :2.7
 Change log:
 Version                                Date                                      Who                                      Description
 v1.0                                        20170822                             Steve                                    1st release
-
 """
 ##########################################
 import csv, re, sys, logging, os
 import ConfigParser
+from utilities import utilities
 from utilities.TransformationException import * 
 
 #define the log
@@ -62,7 +62,8 @@ def main(args):
     #==============================================================================
     #write to the new file
     try:
-        destination_file = output_folder + output_file    
+        date_field = utilities.getDateFromFileName(input_file)
+        destination_file = output_folder + output_file + "_"+ date_field + ".csv" 
         with open(destination_file, 'wb') as csv_out:
             #write the header    
             writer = csv.DictWriter(csv_out, fieldnames=header_row)
@@ -79,6 +80,8 @@ def main(args):
                 mywriter.writerows([dataNode])
         csv_out.close
         log.info("Processing done {}".format(destination_file))
+    except TransformationException as e:
+        raise e
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

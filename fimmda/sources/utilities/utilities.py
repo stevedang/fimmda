@@ -45,8 +45,20 @@ def getMaturity(str2):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
-		# if there is an error throw error code 105 to the outer function
+        # if there is an error throw error code 105 to the outer function
         raise TransformationException(ERROR_105+" maturity: "+str2)
 ################################################################
 #get date from a file name
-# for example FIMMDA_PARYIELD_DAILY_20170902.csv into RTSH_MUREX_EOD_20170902.csv 
+# for example FIMMDA_PARYIELD_DAILY_20170902.csv into 20170902 
+def getDateFromFileName(str2):
+    try:
+        main_file = str2.split(".csv")[0]
+        #get the main file name FIMMDA_PARYIELD_DAILY_20170902
+        temp_str = main_file.split("_")
+        #return the last part 20170902
+        return temp_str[-1]
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        log.debug("{} {} {} {}".format(exc_type, fname, exc_tb.tb_lineno, e.message))
+        raise TransformationException(ERROR_106+" : "+str2)
