@@ -55,6 +55,9 @@ def getDateFromFileName(str2):
         main_file = str2.split(".csv")[0]
         #get the main file name 02092017
         temp_str = main_file.split("_")[-1]
+	#if temp_str is TODAY then return 
+	if "TODAY" == temp_str:
+		return temp_str
         #get the year string 2017
         year_str = temp_str[-4:]
         #get the month string 09
