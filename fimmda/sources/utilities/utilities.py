@@ -49,14 +49,22 @@ def getMaturity(str2):
         raise TransformationException(ERROR_105+" maturity: "+str2)
 ################################################################
 #get date from a file name
-# for example FIMMDA_PARYIELD_DAILY_20170902.csv into 20170902 
+# for example FIMMDA_PARYIELD_DAILY_02092017.csv in DDMMYYYY into 20170902 in YYYYMMDD format
 def getDateFromFileName(str2):
     try:
         main_file = str2.split(".csv")[0]
-        #get the main file name FIMMDA_PARYIELD_DAILY_20170902
-        temp_str = main_file.split("_")
+        #get the main file name 02092017
+        temp_str = main_file.split("_")[-1]
+        #get the year string 2017
+        year_str = temp_str[-4:]
+        #get the month string 09
+        month_str = temp_str[2:4]
+        #get the day string 02
+        day_str = temp_str[:2]
+        #create new string 20170902 in YYYYMMDD
+        new_temp_str = year_str + month_str + day_str
         #return the last part 20170902
-        return temp_str[-1]
+        return new_temp_str
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

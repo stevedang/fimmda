@@ -119,7 +119,7 @@ zip $BASEDIR/$LOGFOLDER/service_$current_time.zip $(dirname "$0")/logs/*.log
 # do housekeeping, zip all the archive folder
 echo "Zipping all the output files for housekeeping"
 current_time=$(date +"%Y%m%d_%H%M%S")
-find $BASEDIR/$archive_folder/* -type d -exec zip $BASEDIR/$archive_folder/archive_$current_time.zip {} +
+find $BASEDIR/$archive_folder/* -type d -exec zip -r $BASEDIR/$archive_folder/archive_$current_time.zip {} +
 find $BASEDIR/$archive_folder/* -type d -exec rm -rf {} +
 
 #empty the service.pid
